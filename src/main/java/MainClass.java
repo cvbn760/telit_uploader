@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,29 +93,31 @@ public class MainClass {
                 System.out.println("DOWNLOADER: no connected devices found.");
                 return;
             }
-        }catch (Exception exc){
+        } catch (Exception exc) {
             releaseProcess();
         }
         releaseProcess();
-        
+
         //Получаем список файлов в указанной дирректории
         File dir = new File(ADDR_PC); //path указывает на директорию
         File[] arrFiles = dir.listFiles();
+        System.out.println("DOWNLOADER: " + arrFiles.length + " files were found in the specified directory.");
+
 
         // Загружаем файлы в модем
         try {
             StringBuffer buffer;
-            for (File f: arrFiles){
+            for (File f : arrFiles) {
                 buffer = new StringBuffer();
                 buffer.append(ADB_PUSH + " ").append(f.getName()).append(" " + ADDR_TELIT);
                 startNewProcces(ADDR_PC, buffer.toString());
                 readAnswer().stream().forEach(System.out::println);
                 System.out.println("->" + f.getName() + "...done");
             }
-            System.out.println("DOWNLOADER: uploading is done");
+            System.out.println("DOWNLOADER: All files have been uploaded");
         }
         catch (Exception exc){
-            System.out.println("DOWNLOADER: an error occurred during loading");
+            System.out.println("DOWNLOADER: An error occurred during loading");
             exc.printStackTrace();
         }
     }
