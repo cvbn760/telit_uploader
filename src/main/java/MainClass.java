@@ -1,3 +1,5 @@
+import jssc.SerialPortException;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -70,55 +72,59 @@ public class MainClass {
     }
 
 
-    public static void main(String...args) throws IOException, InterruptedException {
-        Arrays.stream(args).toList().stream().forEach(System.out::println);
+    public static void main(String...args) throws IOException, InterruptedException, SerialPortException {
+//        Arrays.stream(args).toList().stream().forEach(System.out::println);
+//
+//        String ADDR_PC = args[0];     // Полный путь к папке с файлами, которые будут загружаться в модем
+//        String ADDR_TELIT = args[1];  // Дирректория в памяти модема куда будут складываться файлы
+//        System.out.println("DOWNLOADER: has been started.");
+//
+//        // Пробуем использовать командную строку
+//        try {
+//            startNewProcces("","");
+//            releaseProcess();
+//        } catch (IOException e) {
+//            System.out.println("DOWNLOADER: unable to use command line.");
+//            return;
+//        }
+//
+//        // Получаем список подключенных устройств
+//        try {
+//            startNewProcces("", GET_LIST_DEVICES);
+//            if(!checkingConnectedDevices()){
+//                System.out.println("DOWNLOADER: no connected devices found.");
+//                return;
+//            }
+//        } catch (Exception exc) {
+//            releaseProcess();
+//        }
+//        releaseProcess();
+//
+//        //Получаем список файлов в указанной дирректории
+//        File dir = new File(ADDR_PC); //path указывает на директорию
+//        File[] arrFiles = dir.listFiles();
+//
+////        System.out.println("DOWNLOADER: " + arrFiles.length + " files were found in the specified directory.");
+//
+//
+//        // Загружаем файлы в модем
+//        try {
+//            StringBuffer buffer;
+//            for (File f : arrFiles) {
+//                buffer = new StringBuffer();
+//                buffer.append(ADB_PUSH + " ").append(f.getName()).append(" " + ADDR_TELIT);
+//                startNewProcces(ADDR_PC, buffer.toString());
+//                readAnswer().stream().forEach(System.out::println);
+//                System.out.println("->" + f.getName() + "...done");
+//            }
+//            System.out.println("DOWNLOADER: All files have been uploaded");
+//        }
+//        catch (Exception exc){
+//            System.out.println("DOWNLOADER: An error occurred during loading");
+//            exc.printStackTrace();
+//        }
 
-        String ADDR_PC = args[0];     // Полный путь к папке с файлами, которые будут загружаться в модем
-        String ADDR_TELIT = args[1];  // Дирректория в памяти модема куда будут складываться файлы
-        System.out.println("DOWNLOADER: has been started.");
 
-        // Пробуем использовать командную строку
-        try {
-            startNewProcces("","");
-            releaseProcess();
-        } catch (IOException e) {
-            System.out.println("DOWNLOADER: unable to use command line.");
-            return;
-        }
-
-        // Получаем список подключенных устройств
-        try {
-            startNewProcces("", GET_LIST_DEVICES);
-            if(!checkingConnectedDevices()){
-                System.out.println("DOWNLOADER: no connected devices found.");
-                return;
-            }
-        } catch (Exception exc) {
-            releaseProcess();
-        }
-        releaseProcess();
-
-        //Получаем список файлов в указанной дирректории
-        File dir = new File(ADDR_PC); //path указывает на директорию
-        File[] arrFiles = dir.listFiles();
-        System.out.println("DOWNLOADER: " + arrFiles.length + " files were found in the specified directory.");
-
-
-        // Загружаем файлы в модем
-        try {
-            StringBuffer buffer;
-            for (File f : arrFiles) {
-                buffer = new StringBuffer();
-                buffer.append(ADB_PUSH + " ").append(f.getName()).append(" " + ADDR_TELIT);
-                startNewProcces(ADDR_PC, buffer.toString());
-                readAnswer().stream().forEach(System.out::println);
-                System.out.println("->" + f.getName() + "...done");
-            }
-            System.out.println("DOWNLOADER: All files have been uploaded");
-        }
-        catch (Exception exc){
-            System.out.println("DOWNLOADER: An error occurred during loading");
-            exc.printStackTrace();
-        }
+        SerarchEngine serarchEngine = SerarchEngine.getNewInstance();
     }
 }
