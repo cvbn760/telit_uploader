@@ -33,16 +33,25 @@ public class Main {
         currentTask = false;
         //Устанавливаем ивент лисенер и маску
         //Отправляем запрос устройству
-        serialPort.writeString(cmd + "\r");
-        System.out.println(cmd + "\r");
-        Thread.sleep(500);
-        String data = serialPort.readString();
-        if(data.contains("OK")){
-            System.out.println("OK");
-            return true;
-        }else {
-            System.out.println("ERROR");
-            return false;
+        serialPort.writeString(cmd);
+        System.out.println(cmd);
+        String data = "";
+
+        up:
+        while (true){ // Ждем ответ
+            Thread.sleep(50);
+            data = serialPort.readString();
+            if(data == null) data = "";
+            data = data.trim();
+            if (data.contains("OK") | data.contains(">>>")) {
+                System.out.println(data + "\r\n");
+                return true;
+            }
+            if (data.contains("ERROR")) {
+                System.out.println(data + "\r\n");
+                return false;
+            }
+            data = "";
         }
     }
 
@@ -77,7 +86,9 @@ public class Main {
     public static void main(String[] args) throws SerialPortException, InterruptedException, IOException {
 
 //        String port = args[0];
+//        String packAddr = args[1];
         String port = "29";
+        String packAddr = "C:/8450110539_DSP";
 
         // Показать доступные COM порты
         System.out.println("Ports available: ");
@@ -93,35 +104,35 @@ public class Main {
             return;
         }
         else {
-            System.out.println("COM" + port + " was opened\r\n");
+            System.out.println(">>>>>>>>>>>>>> COM" + port + " was opened\r\n");
         }
 
         // Загрузка АТ команд
-        if(!sendAtCmd("AT$GPSP=1")) return;
-        if(!sendAtCmd("AT$GPSSAV")) return;
-        if(!sendAtCmd("AT#V24CFG=3,1,1")) return;
-        if(!sendAtCmd("AT#V24=3,1")) return;
-        if(!sendAtCmd("AT#DIALMODE=2")) return;
-        if(!sendAtCmd("AT#ECONLY=2")) return;
-        if(!sendAtCmd("AT#VAUX=1,1")) return;
-        if(!sendAtCmd("AT#V24CFG=0,2,1")) return;
-        if(!sendAtCmd("AT#V24CFG=2,2,1")) return;
-        if(!sendAtCmd("AT#V24CFG=4,2,1")) return;
-        if(!sendAtCmd("AT#SIMDET=1")) return;
-        if(!sendAtCmd("AT&W")) return;
-        if(!sendAtCmd("AT&P")) return;
-        if(!sendAtCmd("AT#ECALLNWTMR=120,2")) return;
+        if(!sendAtCmd("AT$GPSP=0\r")) return;
+        if(!sendAtCmd("AT$GPSSAV\r")) return;
+        if(!sendAtCmd("AT#V24CFG=3,1,1\r")) return;
+        if(!sendAtCmd("AT#V24=3,1\r")) return;
+        if(!sendAtCmd("AT#DIALMODE=2\r")) return;
+        if(!sendAtCmd("AT#ECONLY=2\r")) return;
+        if(!sendAtCmd("AT#VAUX=1,1\r")) return;
+        if(!sendAtCmd("AT#V24CFG=0,2,1\r")) return;
+        if(!sendAtCmd("AT#V24CFG=2,2,1\r")) return;
+        if(!sendAtCmd("AT#V24CFG=4,2,1\r")) return;
+        if(!sendAtCmd("AT#SIMDET=1\r")) return;
+        if(!sendAtCmd("AT&W\r")) return;
+        if(!sendAtCmd("AT&P\r")) return;
+        if(!sendAtCmd("AT#ECALLNWTMR=120,2\r")) return;
         System.out.println("All cmds upload");
 
 //         Загрузка файлов
-        sendFile("C:/8450110539_DSP/era.bin", "\r\nAT#M2MWRITE=\"/data/azc/mod/era.bin\",572458");
-        Thread.sleep(500);
-        sendFile("C:/8450110539_DSP/factory.cfg", "\r\nAT#M2MWRITE=\"/data/azc/mod/factory.cfg\",46");
-        Thread.sleep(500);
-        sendFile("C:/8450110539_DSP/softdog.bin", "\r\nAT#M2MWRITE=\"/data/azc/mod/softdog.bin\",13096");
-        Thread.sleep(500);
-        sendFile("C:/8450110539_DSP/adb_credentials", "\r\nAT#M2MWRITE=\"/var/run/adb_credentials\",18");
-        Thread.sleep(500);
+//        sendFile("C:/8450110539_DSP/era.bin", "\r\nAT#M2MWRITE=\"/data/azc/mod/era.bin\",572458");
+//        Thread.sleep(500);
+//        sendFile("C:/8450110539_DSP/factory.cfg", "\r\nAT#M2MWRITE=\"/data/azc/mod/factory.cfg\",46");
+//        Thread.sleep(500);
+//        sendFile("C:/8450110539_DSP/softdog.bin", "\r\nAT#M2MWRITE=\"/data/azc/mod/softdog.bin\",13096");
+//        Thread.sleep(500);
+//        sendFile("C:/8450110539_DSP/adb_credentials", "\r\nAT#M2MWRITE=\"/var/run/adb_credentials\",18");
+//        Thread.sleep(500);
 
     }
 }
