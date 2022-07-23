@@ -54,12 +54,21 @@ public class Main {
             data = serialPort.readString();
             if(data == null) data = "";
             data = data.trim();
-            if (data.contains("OK") | data.contains(">>>")) {
-                System.out.println(data + "\r\n");
+            if (data.contains("OK")) {
+                System.out.println("OK\r\n");
                 return true;
             }
-            if (data.contains("ERROR") | data.contains("NO CARRIER") ) {
-                System.out.println(data + "\r\n");
+
+            if (data.contains(">>>")) {
+                System.out.println(">>>\r\n");
+                return true;
+            }
+            if (data.contains("ERROR")) {
+                System.out.println("ERROR\r\n");
+                return false;
+            }
+            if (data.contains("NO CARRIER")) {
+                System.out.println("NO CARRIER\r\n");
                 return false;
             }
         }
@@ -150,47 +159,7 @@ public class Main {
         }
     }
 
-    public static boolean hashBinUpload(String sourceAddr) throws SerialPortException, IOException, InterruptedException {         // разрешение на запуск hash.bin
-        if (!sendFile("hash.bin", sourceAddr, "/data/azc/mod/")) return false; // загружаем hash.bin
-        silentCmd();
-        if (!sendAtCmd("AT#M2MRUN=1,\"hash.bin\"\r")) return false;                           // разрешение на запуск hash.bin
-        silentCmd();
-        if (!sendAtCmd("AT+M2M=1\r")) return false;                                             // перезагрузка
 
-        String data = "";
-        // Ожидаем пока перезагрузится
-        System.out.println("Waiting reboot module...");
-        serialPort.closePort();
-        Thread.sleep(30000);
-        System.out.println(1);
-        int cnt = 0;
-        down:
-        while (true) end:{
-            Thread.sleep(500);
-            try {
-                openConnection(port);
-//                if (!serialPort.openPort()) break end;
-                data = serialPort.readString();
-                if (data == null) data = "";
-                System.out.println(data);
-                if (data.contains("hash.bin_started")){
-                    if (data.contains("crc32=811B90A2")){
-                        System.out.println(data);
-                        return true;
-                    }
-                }
-
-                if (cnt >= 600) {
-                    deleteFileModen("hash.bin", "/data/azc/mod/");
-                }
-                cnt++;
-                serialPort.closePort();
-            }
-            catch (Exception exc){
-                break end;
-            }
-        }
-    }
 
 
     private static String port = "";
@@ -198,10 +167,10 @@ public class Main {
 
     public static void main(String[] args) throws SerialPortException, InterruptedException, IOException {
 
-//        String port = args[0];
-//        String sourceAddr = args[1];
-        port = "29";
-        sourceAddr = "C:/8450110539_DSP/";
+        port = args[0];
+        sourceAddr = args[1];
+//        port = "29";
+//        sourceAddr = "C:/8450110539_DSP/";
 
         // Показать доступные COM порты
         System.out.println("Ports available: ");
@@ -221,49 +190,106 @@ public class Main {
         }
 
 //        // Загрузка АТ команд
-//        int cmd = 0;
-//        if(sendAtCmd("AT$GPSP=0\r")) cmd++;           // 1
-//        if(sendAtCmd("AT$GPSSAV\r")) cmd++;           // 2
-//        if(sendAtCmd("AT#V24CFG=3,1,1\r")) cmd++;     // 3
-//        if(sendAtCmd("AT#V24=3,1\r")) cmd++;          // 4
-//        if(sendAtCmd("AT#DIALMODE=2\r")) cmd++;       // 5
-//        if(sendAtCmd("AT#ECONLY=2\r")) cmd++;         // 6
-//        if(sendAtCmd("AT#VAUX=1,1\r")) cmd++;         // 7
-//        if(sendAtCmd("AT#V24CFG=0,2,1\r")) cmd++;     // 8
-//        if(sendAtCmd("AT#V24CFG=2,2,1\r")) cmd++;     // 9
-//        if(sendAtCmd("AT#V24CFG=4,2,1\r")) cmd++;     // 10
-//        if(sendAtCmd("AT#SIMDET=1\r")) cmd++;         // 11
-//        if(sendAtCmd("AT&W\r")) cmd++;                // 12
-//        if(sendAtCmd("AT&P\r")) cmd++;                // 13
-//        if(sendAtCmd("AT#ECALLNWTMR=120,2\r")) cmd++; // 14
-//        System.out.println(cmd + " out of " + 14 + " commands sent successfully");
-//        if (cmd != 14){
-//            serialPort.closePort();
-//            System.out.println("Not all AT commands were executed.");
-//            System.out.println("The firmware is stopped.");
-//            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
-//            return;
-//        }
-
-        // Загрузка hash.bin
-        int hashCnt = 0;
-        while (!hashBinUpload(sourceAddr)){
-            hashCnt++;
-            if (hashCnt == 5) {
-                serialPort.closePort();
-                System.out.println("The firmware is stopped.");
-                System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
-                return;
-            }
+        int cmd = 0;
+        if(sendAtCmd("AT$GPSP=1\r"));           // --
+        if(sendAtCmd("AT$GPSSAV\r"))cmd++;            // 1
+        if(sendAtCmd("AT#V24CFG=3,1,1\r")) cmd++;     // 2
+        if(sendAtCmd("AT#V24=3,1\r")) cmd++;          // 3
+        if(sendAtCmd("AT#DIALMODE=2\r")) cmd++;       // 4
+        if(sendAtCmd("AT#ECONLY=2\r")) cmd++;         // 5
+        if(sendAtCmd("AT#VAUX=1,1\r")) cmd++;         // 6
+        if(sendAtCmd("AT#V24CFG=0,2,1\r")) cmd++;     // 7
+        if(sendAtCmd("AT#V24CFG=2,2,1\r")) cmd++;     // 8
+        if(sendAtCmd("AT#V24CFG=4,2,1\r")) cmd++;     // 9
+        if(sendAtCmd("AT#SIMDET=1\r")) cmd++;         // 10
+        if(sendAtCmd("AT&W\r")) cmd++;                // 11
+        if(sendAtCmd("AT&P\r")) cmd++;                // 12
+        if(sendAtCmd("AT#ECALLNWTMR=120,2\r")) cmd++; // 13
+        System.out.println(cmd + " out of " + 13 + " commands sent successfully");
+        if (cmd != 13){
+            serialPort.closePort();
+            System.out.println("Not all AT commands were executed.");
+            System.out.println("The firmware is stopped.");
+            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
+            return;
         }
 
+        // Загрузка hash.bin
+        // hash.bin отвечает только в UART0
+        // использовать его при загрузке через USB нельзя никак
 
 //         Загрузка файлов
-//        if (!sendFile("era.bin", sourceAddr, "/data/azc/mod/")) return;
-//        if (!sendFile("factory.cfg", sourceAddr, "/data/azc/mod/")) return;
-//        if (!sendFile("softdog.bin", sourceAddr, "/data/azc/mod/")) return;
-//        if (!sendFile("adb_credentials", sourceAddr, "/var/run/")) return;
+        int fileCnt = 0;
+        if (sendFile("hash.bin", sourceAddr, "/data/azc/mod/")) fileCnt++;    // 1
+        if (sendFile("era.bin", sourceAddr, "/data/azc/mod/")) fileCnt++;     // 2
+        if (sendFile("factory.cfg", sourceAddr, "/data/azc/mod/")) fileCnt++; // 3
+        if (sendFile("softdog.bin", sourceAddr, "/data/azc/mod/")) fileCnt++; // 4
+        if (sendFile("adb_credentials", sourceAddr, "/var/run/")) fileCnt++;  // 5
+        System.out.println(fileCnt + " out of " + 5 + " main files sent successfully");
+        if (fileCnt != 5){
+            serialPort.closePort();
+            System.out.println("Not all main files were uploaded.");
+            System.out.println("The firmware is stopped.");
+            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
+            return;
+        }
 
+        // Аудиофайлы
+        int audCnt = 0;
+        if (sendFile("by_ignition.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 1
+        if (sendFile("by_ignition_off.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 2
+        if (sendFile("by_service.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 3
+        if (sendFile("by_sos.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 4
+        if (sendFile("confirm_result.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 5
+        if (sendFile("critical_error.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 6
+        if (sendFile("ecall.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 7
+        if (sendFile("end_conditions.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 8
+        if (sendFile("end_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 9
+        if (sendFile("end_test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 10
+        if (sendFile("error.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 11
+        if (sendFile("md_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 12
+        if (sendFile("no_conditions.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 13
+        if (sendFile("no_satellites.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 14
+        if (sendFile("no_test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 15
+        if (sendFile("ok.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 16
+        if (sendFile("one_tone.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 17
+        if (sendFile("play_phrase.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 18
+        if (sendFile("say_phrase.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 19
+        if (sendFile("self_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 20
+        if (sendFile("start_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 21
+        if (sendFile("stop_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 22
+        if (sendFile("test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 23
+        if (sendFile("two_tones.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 24
+        System.out.println(audCnt + " out of " + 24 + " audio files sent successfully");
+        if (audCnt != 24){
+            serialPort.closePort();
+            System.out.println("Not all audio files were uploaded.");
+            System.out.println("The firmware is stopped.");
+            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
+            return;
+        }
+
+        // acdb файлы
+        int acdbCnt = 0;
+        if (sendFile("Bluetooth_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("General_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("Global_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("Handset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("Hdmi_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("Headset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        if (sendFile("Speaker_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println(acdbCnt + " out of " + 7 + " ACDB files sent successfully");
+        if (acdbCnt != 7){
+            serialPort.closePort();
+            System.out.println("Not all ACDB files were uploaded.");
+            System.out.println("The firmware is stopped.");
+            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
+            return;
+        }
+
+        if(sendAtCmd("AT#M2MRUN=1,\"hash.bin\"\r"));
+        if(sendAtCmd("ATE0\r"));
+        if(sendAtCmd("AT+M2M=1\r"));
 
         serialPort.closePort();
         System.out.println("Firmware completed successfully");
