@@ -55,20 +55,20 @@ public class Main {
             if(data == null) data = "";
             data = data.trim();
             if (data.contains("OK")) {
-                System.out.println("OK\r\n");
+                System.out.println("OK");
                 return true;
             }
 
             if (data.contains(">>>")) {
-                System.out.println(">>>\r\n");
+                System.out.println(">>>");
                 return true;
             }
             if (data.contains("ERROR")) {
-                System.out.println("ERROR\r\n");
+                System.out.println("ERROR");
                 return false;
             }
             if (data.contains("NO CARRIER")) {
-                System.out.println("NO CARRIER\r\n");
+                System.out.println("NO CARRIER");
                 return false;
             }
         }
@@ -95,11 +95,32 @@ public class Main {
         return true;
     }
 
+    public static boolean checkFile(String name, long size, String dir) throws SerialPortException, InterruptedException {
+        // Мы уже в необходимой дирректории
+        serialPort.writeString("AT#M2MLIST\r");
+        String expect = "\"" + name + "\"," + size;
+        String data = "";
+        while (true) { // Ждем ответ
+            Thread.sleep(50);
+            data = serialPort.readString();
+            if (data == null) data = "";
+            if (data.contains("#M2MLIST")){
+                if (data.contains(expect)){
+                    System.out.println("Successfully......... #M2MLIST: " + expect);
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+    }
+
     private static boolean sendFile(String fileName, String source, String destenation) throws IOException, SerialPortException, InterruptedException {
         // Находим файл по указанному пути и определяем размер
         File file = new File(source + fileName);
         long size = file.length();
-        System.out.println(source + fileName + "\r\nsize: " + size + " bytes");
+        System.out.println(source + fileName + " size: " + size + " bytes");
 
         StringBuffer sb = new StringBuffer();
         sb.delete(0, sb.length());
@@ -140,13 +161,13 @@ public class Main {
                 if(data == null) data = "";
                 data = data.trim();
                 if (data.contains("OK")) {
-                    System.out.println(data + "\r\n");
+                    System.out.println(data);
                     is.close();
                     silentCmd();
-                    return true;
+                    return checkFile(fileName, size, destenation);
                 }
                 if (data.contains("ERROR")) {
-                    System.out.println(data + "\r\n");
+                    System.out.println(data);
                     is.close();
                     silentCmd();
                     return false;
@@ -192,18 +213,31 @@ public class Main {
 //        // Загрузка АТ команд
         int cmd = 0;
         if(sendAtCmd("AT$GPSP=1\r"));           // --
+        System.out.println();
         if(sendAtCmd("AT$GPSSAV\r"))cmd++;            // 1
+        System.out.println();
         if(sendAtCmd("AT#V24CFG=3,1,1\r")) cmd++;     // 2
+        System.out.println();
         if(sendAtCmd("AT#V24=3,1\r")) cmd++;          // 3
+        System.out.println();
         if(sendAtCmd("AT#DIALMODE=2\r")) cmd++;       // 4
+        System.out.println();
         if(sendAtCmd("AT#ECONLY=2\r")) cmd++;         // 5
+        System.out.println();
         if(sendAtCmd("AT#VAUX=1,1\r")) cmd++;         // 6
+        System.out.println();
         if(sendAtCmd("AT#V24CFG=0,2,1\r")) cmd++;     // 7
+        System.out.println();
         if(sendAtCmd("AT#V24CFG=2,2,1\r")) cmd++;     // 8
+        System.out.println();
         if(sendAtCmd("AT#V24CFG=4,2,1\r")) cmd++;     // 9
+        System.out.println();
         if(sendAtCmd("AT#SIMDET=1\r")) cmd++;         // 10
+        System.out.println();
         if(sendAtCmd("AT&W\r")) cmd++;                // 11
+        System.out.println();
         if(sendAtCmd("AT&P\r")) cmd++;                // 12
+        System.out.println();
         if(sendAtCmd("AT#ECALLNWTMR=120,2\r")) cmd++; // 13
         System.out.println(cmd + " out of " + 13 + " commands sent successfully");
         if (cmd != 13){
@@ -220,10 +254,15 @@ public class Main {
 
 //         Загрузка файлов
         int fileCnt = 0;
+        System.out.println();
         if (sendFile("hash.bin", sourceAddr, "/data/azc/mod/")) fileCnt++;    // 1
+        System.out.println();
         if (sendFile("era.bin", sourceAddr, "/data/azc/mod/")) fileCnt++;     // 2
+        System.out.println();
         if (sendFile("factory.cfg", sourceAddr, "/data/azc/mod/")) fileCnt++; // 3
+        System.out.println();
         if (sendFile("softdog.bin", sourceAddr, "/data/azc/mod/")) fileCnt++; // 4
+        System.out.println();
         if (sendFile("adb_credentials", sourceAddr, "/var/run/")) fileCnt++;  // 5
         System.out.println(fileCnt + " out of " + 5 + " main files sent successfully");
         if (fileCnt != 5){
@@ -236,29 +275,53 @@ public class Main {
 
         // Аудиофайлы
         int audCnt = 0;
+        System.out.println();
         if (sendFile("by_ignition.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 1
+        System.out.println();
         if (sendFile("by_ignition_off.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 2
+        System.out.println();
         if (sendFile("by_service.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 3
+        System.out.println();
         if (sendFile("by_sos.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 4
+        System.out.println();
         if (sendFile("confirm_result.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 5
+        System.out.println();
         if (sendFile("critical_error.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 6
+        System.out.println();
         if (sendFile("ecall.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 7
+        System.out.println();
         if (sendFile("end_conditions.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 8
+        System.out.println();
         if (sendFile("end_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 9
+        System.out.println();
         if (sendFile("end_test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 10
+        System.out.println();
         if (sendFile("error.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 11
+        System.out.println();
         if (sendFile("md_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 12
+        System.out.println();
         if (sendFile("no_conditions.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 13
+        System.out.println();
         if (sendFile("no_satellites.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 14
+        System.out.println();
         if (sendFile("no_test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 15
+        System.out.println();
         if (sendFile("ok.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 16
+        System.out.println();
         if (sendFile("one_tone.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 17
+        System.out.println();
         if (sendFile("play_phrase.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 18
+        System.out.println();
         if (sendFile("say_phrase.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 19
+        System.out.println();
         if (sendFile("self_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 20
+        System.out.println();
         if (sendFile("start_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 21
+        System.out.println();
         if (sendFile("stop_test.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 22
+        System.out.println();
         if (sendFile("test_call.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 23
+        System.out.println();
         if (sendFile("two_tones.wav", sourceAddr + "/audio_files/", "/data/aplay/")) audCnt++; // 24
         System.out.println(audCnt + " out of " + 24 + " audio files sent successfully");
         if (audCnt != 24){
@@ -271,12 +334,19 @@ public class Main {
 
         // acdb файлы
         int acdbCnt = 0;
+        System.out.println();
         if (sendFile("Bluetooth_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("General_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("Global_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("Handset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("Hdmi_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("Headset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+        System.out.println();
         if (sendFile("Speaker_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
         System.out.println(acdbCnt + " out of " + 7 + " ACDB files sent successfully");
         if (acdbCnt != 7){
@@ -287,9 +357,13 @@ public class Main {
             return;
         }
 
+        System.out.println();
         if(sendAtCmd("AT#M2MRUN=1,\"hash.bin\"\r"));
+        System.out.println();
         if(sendAtCmd("ATE0\r"));
+        System.out.println();
         if(sendAtCmd("AT+M2M=1\r"));
+        System.out.println();
 
         serialPort.closePort();
         System.out.println("Firmware completed successfully");
