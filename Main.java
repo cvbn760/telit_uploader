@@ -365,6 +365,7 @@ public class Main {
         if(sendAtCmd("AT+M2M=1\r"));
         System.out.println();
 
+
         serialPort.closePort();
         System.out.println("Firmware completed successfully");
         System.out.println("Port: COM" + port + " was closed");

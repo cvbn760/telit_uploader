@@ -10,17 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65d1921d-a093-41e3-b826-02fe356dabd6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Telit_USB_uploader_jar/Telit_USB_uploader.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/.idea/artifacts/Telit_USB_uploader_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/.idea/libraries/jssc_2_9_4__.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Telit_USB_uploader/Telit_USB_uploader.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
