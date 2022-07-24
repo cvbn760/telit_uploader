@@ -1,9 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Telit_USB_uploader:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Telit_USB_uploader_jar</output-path>
-    <root id="archive" name="Telit_USB_uploader.jar">
-      <element id="module-output" name="Telit_USB_uploader" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../jssc-2.9.4 — копия.jar" path-in-jar="/" />
-    </root>
-  </artifact>
-</component>
