@@ -263,9 +263,9 @@ public class Main {
         System.out.println();
         if (sendFile("softdog.bin", sourceAddr, "/data/azc/mod/")) fileCnt++; // 4
         System.out.println();
-        if (sendFile("adb_credentials", sourceAddr, "/var/run/")) fileCnt++;  // 5
-        System.out.println(fileCnt + " out of " + 5 + " main files sent successfully");
-        if (fileCnt != 5){
+//        if (sendFile("adb_credentials", sourceAddr, "/var/run/")) fileCnt++;  // 5
+        System.out.println(fileCnt + " out of " + 4 + " main files sent successfully");
+        if (fileCnt != 4){
             serialPort.closePort();
             System.out.println("Not all main files were uploaded.");
             System.out.println("The firmware is stopped.");
