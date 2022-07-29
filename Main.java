@@ -333,29 +333,29 @@ public class Main {
         }
 
         // acdb פאיכû
-        int acdbCnt = 0;
-        System.out.println();
-        if (sendFile("Bluetooth_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("General_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("Global_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("Handset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("Hdmi_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("Headset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println();
-        if (sendFile("Speaker_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
-        System.out.println(acdbCnt + " out of " + 7 + " ACDB files sent successfully");
-        if (acdbCnt != 7){
-            serialPort.closePort();
-            System.out.println("Not all ACDB files were uploaded.");
-            System.out.println("The firmware is stopped.");
-            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
-            return;
-        }
+//        int acdbCnt = 0;
+//        System.out.println();
+//        if (sendFile("Bluetooth_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("General_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("Global_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("Handset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("Hdmi_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("Headset_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println();
+//        if (sendFile("Speaker_cal.acdb", sourceAddr + "/dsp_files/", "/data/acdb/acdbdata/")) acdbCnt++;
+//        System.out.println(acdbCnt + " out of " + 7 + " ACDB files sent successfully");
+//        if (acdbCnt != 7){
+//            serialPort.closePort();
+//            System.out.println("Not all ACDB files were uploaded.");
+//            System.out.println("The firmware is stopped.");
+//            System.out.println("Download LE910C1-EU_25.21.222-B008_CUST_136_perf_TFI.exe and try again.");
+//            return;
+//        }
 
         System.out.println();
         if(sendAtCmd("AT#M2MRUN=1,\"hash.bin\"\r"));
